@@ -1,0 +1,7 @@
+#Two worker one control-plane this config will create nodes directly where as in RKE you configure tokens, join nodes manually  and update them to worker or control-plane node. 
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+  - role: worker
+  - role: worker
