@@ -1,0 +1,25 @@
+# Local environment variables
+.env
+
+# Python virtual environment
+venv/
+ENV/
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest / coverage reports
+.pytest_cache/
+.coverage
+htmlcov/
+
+# OS specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

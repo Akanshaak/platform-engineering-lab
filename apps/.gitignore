@@ -1,0 +1,8 @@
+# Ignore environment files globally within apps
+.env
+.env.*
+
+# OS specific files
+.DS_Store
+.DS_Store?
+._*

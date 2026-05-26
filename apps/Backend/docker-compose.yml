@@ -1,0 +1,90 @@
+#compose for dev env 
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: merasql
+      POSTGRES_DB: orders
+    volumes:
+      - database_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d orders" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    networks:
+      - default
+      - shared-net
+
+  redis:
+    image: "redis:alpine"
+    container_name: orders-redis
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - default
+      - shared-net
+
+  orders-dramatiq:
+    image: orders-fastapi
+    container_name: orders-dramatiq
+    build: .
+    restart: always
+    env_file: .env
+    entrypoint: /app/bin/dramatiq.sh
+    volumes:
+      - ./:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    networks:
+      - default
+      - shared-net
+
+  orders-fastapi:
+    image: orders-fastapi
+    container_name: orders-fastapi
+    build: .
+    restart: always
+    env_file: .env
+    entrypoint: /app/bin/entrypoint.sh
+    ports:
+      - "10100:10100"
+    volumes:
+      - ./:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    networks:
+      - default
+      - shared-net
+#very intresting concept of docker networks, we can have multiple networks and services can be part of one or more networks. Here we have a default network for all services and a shared-net for communication between services in different compose files.
+networks:
+  shared-net:
+    external: true
+
+volumes:
+  database_data:
+    driver: local

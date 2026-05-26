@@ -1,0 +1,23 @@
+services:
+  orders-ui:
+    image: orders-ui
+    container_name: orders-ui
+    build: .
+    restart: always
+    env_file: .env
+    ports:
+      - "5174:5173"
+    volumes:
+      - ./:/app
+      - /app/node_modules # prevent local dev node_modules from overwriting docker node_modules
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+    networks:
+      - default
+      - shared-net
+
+networks:
+  shared-net:
+    external: true
