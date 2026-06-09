@@ -48,7 +48,10 @@ Make sure **Docker** and **Docker Compose** are installed, and create the shared
 ```bash
 docker network create shared-net
 ```
-
+Shared Network is one of the usefull concepts in Docker 
+By deafult every docker compose creates their own network which is not known to other network hence shared network. 
+That being said docker network is one of the most fine concepst of docker 
+Highly recommend watching **{[https://youtu.be/bKFMS5C4CG0?si=G6a77KBWtJBn85n0]**
 ### Running with Docker Compose & Makefiles
 
 #### 1. Start the Backend Stack
